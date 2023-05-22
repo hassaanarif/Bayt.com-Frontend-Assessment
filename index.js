@@ -15,9 +15,9 @@ class Slider {
 		this.options = options || {};
 		this.navigationDotsContainer;
 		this.slidesData = slidesData;
-		this.navigationDirection = LEFT_TO_RIGHT;
 		this.autoPlayIntervalInstance = null;
 		this.sliderContainer = sliderContainer;
+		this.navigationDirection = LEFT_TO_RIGHT;
 		this.defaultAutoPlayIntervalDuration = 1000;
 
 		this.setup();
