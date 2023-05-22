@@ -11,5 +11,15 @@
 		<section id="root"></section>
 	</body>
 
-	<script src="./index.js"></script>
+	<script type="module">
+		import Slider from "./index.js";
+		import slidesData from "./data.js";
+
+		const sliderConfig = {
+			autoPlay: true,
+			autoPlayIntervalDuration: 2000,
+		};
+
+		const slider = new Slider(document.querySelector("#root"), slidesData, sliderConfig);
+	</script>
 </html>

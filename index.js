@@ -1,50 +1,24 @@
-var slidesData = [
-	{
-		id: 1,
-		statement: `"Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum quas provident repellat reiciendis.
-						Adipisci veniam in eos similique nulla officia."`,
-		logoURL: "/assets/avatar-1.png",
-		name: "Charlie Hamilton",
-		designation: "Software Engineer at Bayt.com",
-		buttonText: "Open Profile",
-	},
-	{
-		id: 2,
-		statement: `"Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum quas provident repellat reiciendis.
-						Adipisci veniam in eos similique nulla officia."`,
-		logoURL: "/assets/avatar-2.png",
-		name: "Hanna Bekker",
-		designation: "Assistant Director at Education Ministry",
-		buttonText: "Open Profile",
-	},
-	{
-		id: 3,
-		statement: `"Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum quas provident repellat reiciendis.
-						Adipisci veniam in eos similique nulla officia."`,
-		logoURL: "/assets/avatar-3.png",
-		name: "Maria Kert",
-		designation: "Store Supervisor at Amazon",
-		buttonText: "Open Profile",
-	},
-];
+const LEFT_TO_RIGHT = "LEFT_TO_RIGHT";
+const RIGHT_TO_LEFT = "RIGHT_TO_LEFT";
 
 class Slider {
 	constructor(sliderContainer, slidesData, options) {
-		this.sliderContainer = sliderContainer;
-		this.slidesData = slidesData;
-		this.sliderContainer;
-		this.slider;
-		this.previousButton;
-		this.nextButton;
-		this.navigationDotsContainer;
-		this.autoPlayIntervalInstance = null;
-		this.defaultAutoPlayIntervalDuration = 1000;
-		this.options = options || {};
-		this.activeSlideIndex = 0;
-		this.navigationDots = [];
-		this.slides = [];
-		this.startX;
 		this.endX;
+		this.slider;
+		this.startX;
+		this.nextButton;
+		this.slides = [];
+		this.previousButton;
+		this.sliderContainer;
+		this.navigationDots = [];
+		this.activeSlideIndex = 0;
+		this.options = options || {};
+		this.navigationDotsContainer;
+		this.slidesData = slidesData;
+		this.navigationDirection = LEFT_TO_RIGHT;
+		this.autoPlayIntervalInstance = null;
+		this.sliderContainer = sliderContainer;
+		this.defaultAutoPlayIntervalDuration = 1000;
 
 		this.setup();
 	}
@@ -166,9 +140,11 @@ class Slider {
 
 	setupNavigation() {
 		this.previousButton.addEventListener("click", () => {
+			this.navigationDirection = RIGHT_TO_LEFT;
 			this.prevSlide();
 		});
 		this.nextButton.addEventListener("click", () => {
+			this.navigationDirection = LEFT_TO_RIGHT;
 			this.nextSlide();
 		});
 
@@ -193,8 +169,10 @@ class Slider {
 		const distance = this.endX - this.startX;
 		if (Math.abs(distance) > threshold) {
 			if (distance > 0) {
+				this.navigationDirection = RIGHT_TO_LEFT;
 				this.prevSlide();
 			} else {
+				this.navigationDirection = LEFT_TO_RIGHT;
 				this.nextSlide();
 			}
 		}
@@ -221,6 +199,9 @@ class Slider {
 
 	setupNavigationDots(navigationDotButton, index) {
 		navigationDotButton.addEventListener("click", () => {
+			if (index > this.activeSlideIndex) this.navigationDirection = LEFT_TO_RIGHT;
+			else if (index < this.activeSlideIndex) this.navigationDirection = RIGHT_TO_LEFT;
+
 			this.activeSlideIndex = index;
 			this.setActiveSlide();
 		});
@@ -255,7 +236,8 @@ class Slider {
 
 	setupInterval() {
 		this.autoPlayIntervalInstance = setInterval(() => {
-			this.nextSlide();
+			if (this.navigationDirection === LEFT_TO_RIGHT) this.nextSlide();
+			else if (this.navigationDirection === RIGHT_TO_LEFT) this.prevSlide();
 		}, this.options.autoPlayIntervalDuration || this.defaultAutoPlayIntervalDuration);
 	}
 
@@ -264,7 +246,4 @@ class Slider {
 	}
 }
 
-const slider = new Slider(document.querySelector("#root"), slidesData, {
-	autoPlay: true,
-	autoPlayIntervalDuration: 2000,
-});
+export default Slider;
